@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema(
       required: [true, "can't be blank"],
       match: [/\S+@\S+\.\S+/, "is invalid"],
       index: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -24,6 +25,17 @@ const UserSchema = new mongoose.Schema(
         },
       },
     ],
+    role: {
+      type: Number,
+      enum: [0, 1, 2],
+      required: true,
+      default: 2,
+    },
+    labor_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Labor",
+      default: null,
+    },
   },
   { timestamps: true }
 );
