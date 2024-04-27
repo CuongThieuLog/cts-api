@@ -3,47 +3,6 @@ const Labor = require("../models/labor.model");
 const User = require("../models/user.model");
 
 function LaborController() {
-  this.getAll = async (req, res) => {
-    try {
-      const users = await User.find()
-        .select("email role labor_id")
-        .populate({
-          path: "labor_id",
-          populate: {
-            path: "information_id",
-          },
-        });
-
-      res.status(200).json(users);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Failed to fetch labor data" });
-    }
-  };
-
-  this.getById = async (req, res) => {
-    const userId = req.params.id;
-
-    try {
-      const user = await User.findById(userId)
-        .select("email role labor_id")
-        .populate({
-          path: "labor_id",
-          populate: {
-            path: "information_id",
-          },
-        });
-
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      res.status(200).json(user);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch user data by id" });
-    }
-  };
-
   this.create = async (req, res) => {
     try {
       const {
