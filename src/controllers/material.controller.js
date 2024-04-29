@@ -78,10 +78,14 @@ function MaterialController() {
   this.remove = async (req, res) => {
     const { id } = req.params;
     try {
-      await Material.findByIdAndRemove(id);
-      res.status(204).end();
+      const removedMaterial = await Material.findByIdAndDelete(id);
+      if (!removedMaterial) {
+        return res.status(404).json({ error: "Material not found" });
+      }
+      res.status(200).json({ message: "Material deleted successfully" });
     } catch (error) {
-      res.status(500).json({ error: "Failed to removed material" });
+      console.log(error);
+      res.status(500).json({ error: "Failed to remove material" });
     }
   };
 

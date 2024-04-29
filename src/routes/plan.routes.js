@@ -8,6 +8,6 @@ router.post("/create", auth, PlanController.create);
 router.put("/update/:id", auth, PlanController.update);
 router.delete("/remove/:id", auth, PlanController.remove);
 router.get("/key-value", auth, PlanController.getKeyValue);
-router.get("/export-excel", auth, PlanController.exportAllProjectsToExcel);
+router.get("/export-excel", auth, PlanController.exportAllPlansToExcel);
 
 module.exports = router;

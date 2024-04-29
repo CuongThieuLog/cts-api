@@ -79,10 +79,14 @@ function CostController() {
   this.remove = async (req, res) => {
     const { id } = req.params;
     try {
-      await Cost.findByIdAndRemove(id);
-      res.status(204).end();
+      const removedCost = await Plan.findByIdAndDelete(id);
+      if (!removedCost) {
+        return res.status(404).json({ error: "Cost not found" });
+      }
+      res.status(200).json({ message: "Cost deleted successfully" });
     } catch (error) {
-      res.status(500).json({ error: "Failed to removed cost" });
+      console.log(error);
+      res.status(500).json({ error: "Failed to remove cost" });
     }
   };
 

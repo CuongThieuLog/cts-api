@@ -76,10 +76,14 @@ function ReportController() {
   this.remove = async (req, res) => {
     const { id } = req.params;
     try {
-      await Report.findByIdAndRemove(id);
-      res.status(204).end();
+      const removedReport = await Material.findByIdAndDelete(id);
+      if (!removedReport) {
+        return res.status(404).json({ error: "Report not found" });
+      }
+      res.status(200).json({ message: "Report deleted successfully" });
     } catch (error) {
-      res.status(500).json({ error: "Failed to removed report" });
+      console.log(error);
+      res.status(500).json({ error: "Failed to remove report" });
     }
   };
 

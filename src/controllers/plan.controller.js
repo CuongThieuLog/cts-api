@@ -106,10 +106,14 @@ function PlanController() {
   this.remove = async (req, res) => {
     const { id } = req.params;
     try {
-      await Plan.findByIdAndRemove(id);
-      res.status(204).end();
+      const removedPlan = await Plan.findByIdAndDelete(id);
+      if (!removedPlan) {
+        return res.status(404).json({ error: "Plan not found" });
+      }
+      res.status(200).json({ message: "Plan deleted successfully" });
     } catch (error) {
-      res.status(500).json({ error: "Failed to removed plan" });
+      console.log(error);
+      res.status(500).json({ error: "Failed to remove plan" });
     }
   };
 
@@ -128,7 +132,46 @@ function PlanController() {
     }
   };
 
-  this.exportAllPlansToExcel = async (req, res) => {};
+  this.exportAllPlansToExcel = async (req, res) => {
+    try {
+      const plans = await Plan.find();
+
+      const workbook = new excel.Workbook();
+      const worksheet = workbook.addWorksheet("Plans");
+
+      worksheet.columns = [
+        { header: "ID", key: "_id", width: 30 },
+        { header: "Plan Name", key: "plan_name", width: 30 },
+        { header: "Start Date", key: "start_date", width: 15 },
+        { header: "Deadline", key: "deadline", width: 15 },
+        { header: "Create by", key: "created_by", width: 30 },
+        { header: "Project id", key: "project_id", width: 30 },
+      ];
+
+      plans.forEach((plan) => {
+        worksheet.addRow({
+          _id: plan._id,
+          plan_name: plan.plan_name,
+          start_date: plan.start_date,
+          deadline: plan.deadline,
+          created_by: plan.created_by,
+          project_id: plan.project_id,
+        });
+      });
+
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
+      res.setHeader("Content-Disposition", "attachment; filename=plans.xlsx");
+
+      await workbook.xlsx.write(res);
+
+      res.end();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to export plans to Excel" });
+    }
+  };
 
   return this;
 }

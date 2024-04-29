@@ -106,10 +106,14 @@ function ProjectController() {
   this.remove = async (req, res) => {
     const { id } = req.params;
     try {
-      await Project.findByIdAndRemove(id);
-      res.status(204).end();
+      const removedProject = await Project.findByIdAndDelete(id);
+      if (!removedProject) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+      res.status(200).json({ message: "Project deleted successfully" });
     } catch (error) {
-      res.status(500).json({ error: "Failed to removed project" });
+      console.log(error);
+      res.status(500).json({ error: "Failed to remove project" });
     }
   };
 
