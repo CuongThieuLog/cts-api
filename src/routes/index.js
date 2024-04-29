@@ -8,6 +8,7 @@ const planRoute = require("./plan.routes");
 const materialRoute = require("./material.routes");
 const costRoute = require("./cost.routes");
 const reportRoute = require("./report.routes");
+const equipmentRoute = require("./equipment.routes");
 
 const router = express.Router();
 
@@ -19,5 +20,6 @@ router.use("/plan", planRoute);
 router.use("/material", materialRoute);
 router.use("/cost", costRoute);
 router.use("/report", reportRoute);
+router.use("/equipment", equipmentRoute);
 
 module.exports = router;
