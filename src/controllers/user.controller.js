@@ -59,6 +59,36 @@ function UserController() {
     }
   };
 
+  this.getAllNoPage = async (req, res) => {
+    try {
+      const { page, limit, role, email } = req.query;
+      let query = baseController.appendFilters({}, { role, email });
+      let eloquent = (queryBuilder) => {
+        return queryBuilder.select("email role labor_id").populate({
+          path: "labor_id",
+          populate: {
+            path: "information_id",
+          },
+        });
+      };
+
+      const { results, pagination } = await baseController.pagination(
+        User,
+        query,
+        eloquent,
+        page,
+        limit
+      );
+
+      res.status(200).json({
+        data: results,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Failed to fetch labor data" });
+    }
+  };
+
   this.getById = async (req, res) => {
     const userId = req.params.id;
 

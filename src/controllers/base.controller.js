@@ -38,7 +38,11 @@ function BaseController() {
   this.appendFilters = (query, filters) => {
     Object.keys(filters).forEach((key) => {
       if (filters[key] !== null && filters[key] !== undefined) {
-        query[key] = { $regex: filters[key], $options: "i" };
+        if (key === "role") {
+          query[key] = filters[key];
+        } else {
+          query[key] = { $regex: filters[key], $options: "i" };
+        }
       }
     });
     return query;
