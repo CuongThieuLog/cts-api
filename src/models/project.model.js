@@ -33,6 +33,13 @@ const ProjectSchema = new mongoose.Schema(
       enum: [0, 1, 2],
       default: 0,
     },
+    labors: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Labor",
+        require: false,
+      },
+    ],
   },
   { timestamps: true }
 );

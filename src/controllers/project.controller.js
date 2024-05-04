@@ -180,6 +180,40 @@ function ProjectController() {
     }
   };
 
+  this.addLaborsToProject = async (req, res) => {
+    const { id } = req.params;
+    const { laborIds } = req.body;
+
+    try {
+      const project = await Project.findById(id);
+
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+
+      const newLaborIds = laborIds.filter(
+        (laborId) => !project.labors.includes(laborId)
+      );
+
+      if (newLaborIds.length === 0) {
+        return res
+          .status(400)
+          .json({ error: "All laborIds are already added to the project" });
+      }
+
+      project.labors.push(...newLaborIds);
+
+      await project.save();
+
+      res.status(200).json({ project });
+    } catch (error) {
+      console.log(error);
+      res
+        .status(500)
+        .json({ error: "Failed to update or create labor in project" });
+    }
+  };
+
   return this;
 }
 
