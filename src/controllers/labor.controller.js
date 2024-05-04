@@ -61,6 +61,7 @@ function LaborController() {
         dob,
         phone,
         address,
+        role,
       } = req.body;
 
       const labor = await Labor.findByIdAndUpdate(
@@ -98,7 +99,14 @@ function LaborController() {
         await information.save();
       }
 
-      res.status(200).json({ message: "Updated labor successfully" });
+      const user = await User.findOne({ labor_id: laborId });
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      user.role = role;
+      await user.save();
+
+      res.status(200).json({ message: "Updated labor and user successfully" });
     } catch (error) {
       res.status(500).json({ error: "Update failed" });
     }
