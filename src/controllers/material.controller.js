@@ -106,6 +106,25 @@ function MaterialController() {
 
   this.exportAllPlansToExcel = async (req, res) => {};
 
+  this.getMaterialByIdProject = async (req, res) => {
+    const projectId = req.params.projectId;
+
+    try {
+      const material = await Material.find({ project_id: projectId }).exec();
+
+      if (!material || material.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No material found for the specified project ID." });
+      }
+
+      return res.status(200).json(material);
+    } catch (error) {
+      console.error("Error fetching material by project ID:", error);
+      return res.status(500).json({ message: "Internal server error." });
+    }
+  };
+
   return this;
 }
 

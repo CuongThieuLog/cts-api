@@ -8,5 +8,9 @@ router.post("/create", auth, MaterialController.create);
 router.put("/update/:id", auth, MaterialController.update);
 router.delete("/remove/:id", auth, MaterialController.remove);
 router.get("/key-value", auth, MaterialController.getKeyValue);
+router.get(
+  "/project/get-by/:projectId",
+  MaterialController.getMaterialByIdProject
+);
 
 module.exports = router;

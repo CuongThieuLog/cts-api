@@ -181,6 +181,25 @@ function PlanController() {
     }
   };
 
+  this.getPlanByIdProject = async (req, res) => {
+    const projectId = req.params.projectId;
+
+    try {
+      const plans = await Plan.find({ project_id: projectId }).exec();
+
+      if (!plans || plans.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No plans found for the specified project ID." });
+      }
+
+      return res.status(200).json(plans);
+    } catch (error) {
+      console.error("Error fetching plans by project ID:", error);
+      return res.status(500).json({ message: "Internal server error." });
+    }
+  };
+
   return this;
 }
 
