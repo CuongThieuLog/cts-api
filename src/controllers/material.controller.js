@@ -115,17 +115,29 @@ function MaterialController() {
 
   this.getMaterialByIdProject = async (req, res) => {
     const projectId = req.params.projectId;
+    const { page, limit } = req.query;
 
     try {
-      const material = await Material.find({ project_id: projectId }).exec();
+      let query = baseController.appendFilters(
+        { project_id: projectId },
+        req.query
+      );
 
-      if (!material || material.length === 0) {
+      const { results, pagination } = await baseController.pagination(
+        Material,
+        query,
+        null,
+        page,
+        limit
+      );
+
+      if (!results || results.length === 0) {
         return res
           .status(404)
           .json({ message: "No material found for the specified project ID." });
       }
 
-      return res.status(200).json(material);
+      return res.status(200).json({ data: results, pagination });
     } catch (error) {
       console.error("Error fetching material by project ID:", error);
       return res.status(500).json({ message: "Internal server error." });

@@ -183,17 +183,30 @@ function PlanController() {
 
   this.getPlanByIdProject = async (req, res) => {
     const projectId = req.params.projectId;
+    console.log(projectId);
+    const { page, limit } = req.query;
 
     try {
-      const plans = await Plan.find({ project_id: projectId }).exec();
+      let query = baseController.appendFilters(
+        { project_id: projectId },
+        req.query
+      );
 
-      if (!plans || plans.length === 0) {
+      const { results, pagination } = await baseController.pagination(
+        Plan,
+        query,
+        null,
+        page,
+        limit
+      );
+
+      if (!results || results.length === 0) {
         return res
           .status(404)
           .json({ message: "No plans found for the specified project ID." });
       }
 
-      return res.status(200).json(plans);
+      return res.status(200).json({ data: results, pagination });
     } catch (error) {
       console.error("Error fetching plans by project ID:", error);
       return res.status(500).json({ message: "Internal server error." });
