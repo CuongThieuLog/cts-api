@@ -9,9 +9,16 @@ function MaterialController() {
     try {
       const { page, limit, material_name } = req.query;
       let query = baseController.appendFilters({}, { material_name });
+      let eloquent = (queryBuilder) => {
+        return queryBuilder.populate({
+          path: "project_id",
+        });
+      };
+
       const { results, pagination } = await baseController.pagination(
         Material,
         query,
+        eloquent,
         page,
         limit
       );
