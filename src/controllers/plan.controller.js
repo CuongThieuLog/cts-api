@@ -182,36 +182,50 @@ function PlanController() {
   };
 
   this.getPlanByIdProject = async (req, res) => {
-    const projectId = req.params.projectId;
-    console.log(projectId);
-    const { page, limit } = req.query;
-
     try {
-      let query = baseController.appendFilters(
-        { project_id: projectId },
-        req.query
-      );
+      const projectId = req.params.projectId;
+      let { page, limit, plan_name } = req.query;
+      page = parseInt(page) || 1;
+      limit = parseInt(limit) || 10;
 
-      const { results, pagination } = await baseController.pagination(
-        Plan,
-        query,
-        null,
-        page,
-        limit
-      );
+      const skip = (page - 1) * limit;
 
-      if (!results || results.length === 0) {
-        return res
-          .status(404)
-          .json({ message: "No plans found for the specified project ID." });
+      const filter = { project_id: projectId };
+      if (plan_name) {
+        filter.plan_name = { $regex: new RegExp(plan_name, "i") };
       }
 
-      return res.status(200).json({ data: results, pagination });
+      const totalCount = await Plan.countDocuments(filter);
+
+      const plans = await Plan.find(filter).skip(skip).limit(limit);
+
+      if (!plans || plans.length === 0) {
+        return res.status(404).json({
+          message: "No plans found for the provided project ID or filter.",
+        });
+      }
+
+      const totalPages = Math.ceil(totalCount / limit);
+      const hasNextPage = page < totalPages;
+      const hasPreviousPage = page > 1;
+
+      return res.status(200).json({
+        data: plans,
+        pagination: {
+          total: totalCount,
+          totalPages: totalPages,
+          currentPage: page,
+          hasNextPage: hasNextPage,
+          hasPreviousPage: hasPreviousPage,
+        },
+      });
     } catch (error) {
-      console.error("Error fetching plans by project ID:", error);
-      return res.status(500).json({ message: "Internal server error." });
+      console.error("Error retrieving plans by project ID:", error);
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
+
+  module.exports = { getPlanByIdProject };
 
   return this;
 }
