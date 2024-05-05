@@ -9,9 +9,15 @@ function ProjectController() {
     try {
       const { page, limit, project_name } = req.query;
       let query = baseController.appendFilters({}, { project_name });
+
+      let eloquent = (queryBuilder) => {
+        return queryBuilder;
+      };
+
       const { results, pagination } = await baseController.pagination(
         Project,
         query,
+        eloquent,
         page,
         limit
       );

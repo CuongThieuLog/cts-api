@@ -14,6 +14,7 @@ function PlanController() {
           path: "project_id",
         });
       };
+
       const { results, pagination } = await baseController.pagination(
         Plan,
         query,
