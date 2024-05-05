@@ -13,5 +13,9 @@ router.get(
   auth,
   EquipmentController.exportAllEquipmentsToExcel
 );
+router.get(
+  "/project/get-by/:projectId",
+  EquipmentController.getEquipmentByIdProject
+);
 
 module.exports = router;

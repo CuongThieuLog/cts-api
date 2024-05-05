@@ -9,9 +9,16 @@ function EquipmentController() {
     try {
       const { page, limit, plan_name } = req.query;
       let query = baseController.appendFilters({}, { plan_name });
+      let eloquent = (queryBuilder) => {
+        return queryBuilder.populate({
+          path: "project_id",
+        });
+      };
+
       const { results, pagination } = await baseController.pagination(
         Equipment,
         query,
+        eloquent,
         page,
         limit
       );
@@ -143,6 +150,53 @@ function EquipmentController() {
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "Failed to export equipments to Excel" });
+    }
+  };
+
+  this.getEquipmentByIdProject = async (req, res) => {
+    try {
+      const projectId = req.params.projectId;
+      let { page, limit, equipment_name } = req.query;
+      page = parseInt(page) || 1;
+      limit = parseInt(limit) || 10;
+
+      const skip = (page - 1) * limit;
+
+      const filter = { project_id: projectId };
+      if (equipment_name) {
+        filter.equipment_name = { $regex: new RegExp(equipment_name, "i") };
+      }
+
+      const totalCount = await Equipment.countDocuments(filter);
+
+      const equipments = await Equipment.find(filter)
+        .populate("project_id")
+        .skip(skip)
+        .limit(limit);
+
+      if (!equipments) {
+        return res.status(404).json({
+          message: "No equipments found for the provided project ID or filter.",
+        });
+      }
+
+      const totalPages = Math.ceil(totalCount / limit);
+      const hasNextPage = page < totalPages;
+      const hasPreviousPage = page > 1;
+
+      return res.status(200).json({
+        data: equipments,
+        pagination: {
+          total: totalCount,
+          totalPages: totalPages,
+          currentPage: page,
+          hasNextPage: hasNextPage,
+          hasPreviousPage: hasPreviousPage,
+        },
+      });
+    } catch (error) {
+      console.error("Error retrieving equipments by project ID:", error);
+      return res.status(500).json({ message: "Internal server error" });
     }
   };
 
