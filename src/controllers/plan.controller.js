@@ -197,9 +197,12 @@ function PlanController() {
 
       const totalCount = await Plan.countDocuments(filter);
 
-      const plans = await Plan.find(filter).skip(skip).limit(limit);
+      const plans = await Plan.find(filter)
+        .populate("project_id")
+        .skip(skip)
+        .limit(limit);
 
-      if (!plans || plans.length === 0) {
+      if (!plans) {
         return res.status(404).json({
           message: "No plans found for the provided project ID or filter.",
         });

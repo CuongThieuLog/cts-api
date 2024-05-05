@@ -129,9 +129,12 @@ function MaterialController() {
 
       const totalCount = await Material.countDocuments(filter);
 
-      const materials = await Material.find(filter).skip(skip).limit(limit);
+      const materials = await Material.find(filter)
+        .populate("project_id")
+        .skip(skip)
+        .limit(limit);
 
-      if (!materials || materials.length === 0) {
+      if (!materials) {
         return res.status(404).json({
           message: "No materials found for the provided project ID or filter.",
         });
