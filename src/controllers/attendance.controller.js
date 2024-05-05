@@ -114,6 +114,34 @@ function AttendanceController() {
     return totalSalary;
   };
 
+  this.getAllCheckInOutByMonthAndYear = async (req, res) => {
+    console.log(123);
+    // try {
+    //   const { userId, month, year } = req.params;
+    //   const startDate = new Date(year, month - 1, 1);
+    //   const endDate = new Date(year, month, 0, 23, 59, 59);
+    //   const allCheckInOut = await Attendance.find({
+    //     user_id: userId,
+    //     createdAt: { $gte: startDate, $lte: endDate },
+    //   });
+    //   if (allCheckInOut.length === 0) {
+    //     return res.status(404).json({
+    //       error:
+    //         "No check-in/out data available for the specified user and month",
+    //     });
+    //   }
+    //   const checkInOutData = allCheckInOut.map((attendance) => ({
+    //     checkIn: attendance.checkIn,
+    //     checkOut: attendance.checkOut,
+    //   }));
+    //   // Trả về dữ liệu
+    //   res.status(200).json(checkInOutData);
+    // } catch (error) {
+    //   console.error("Error fetching check-in/out data:", error);
+    //   res.status(500).json({ error: "Internal server error" });
+    // }
+  };
+
   return this;
 }
 

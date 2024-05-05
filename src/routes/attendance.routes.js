@@ -5,5 +5,10 @@ const auth = require("../middleware/auth.middleware");
 router.post("/check-in", auth, AttendanceController.checkIn);
 router.post("/check-out", auth, AttendanceController.checkOut);
 router.get("/today", auth, AttendanceController.getAttendanceToday);
+router.get(
+  "/get-by/:userId/",
+  auth,
+  AttendanceController.getAllCheckInOutByMonthAndYear
+);
 
 module.exports = router;

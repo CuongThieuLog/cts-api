@@ -9,15 +9,22 @@ function PlanController() {
     try {
       const { page, limit, plan_name } = req.query;
       let query = baseController.appendFilters({}, { plan_name });
+      let eloquent = (queryBuilder) => {
+        return queryBuilder.populate({
+          path: "project_id",
+        });
+      };
       const { results, pagination } = await baseController.pagination(
         Plan,
         query,
+        eloquent,
         page,
         limit
       );
 
       res.json({ data: results, pagination: pagination });
     } catch (error) {
+      console.log(error);
       res.status(500).json({ error: "Failed to fetch plans data" });
     }
   };
