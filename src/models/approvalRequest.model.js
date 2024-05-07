@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const ApprovalRequestSchema = new mongoose.Schema(
   {
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     type: {
       type: String,
       required: true,
@@ -18,6 +23,10 @@ const ApprovalRequestSchema = new mongoose.Schema(
     viewed: {
       type: Boolean,
       default: false,
+    },
+    note: {
+      type: String,
+      default: "",
     },
   },
   { timestamps: true }

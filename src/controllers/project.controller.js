@@ -220,6 +220,34 @@ function ProjectController() {
     }
   };
 
+  this.getProjectsByLaborId = async (req, res) => {
+    const { laborId } = req.params;
+
+    try {
+      const projects = await Project.find({ labors: laborId }).populate({
+        path: "project_manager",
+        select: "name email",
+        populate: {
+          path: "labor_id",
+          populate: {
+            path: "information_id",
+          },
+        },
+      });
+
+      if (!projects || projects.length === 0) {
+        return res
+          .status(404)
+          .json({ error: "No projects found for the provided labor ID" });
+      }
+
+      res.status(200).json({ data: projects });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Failed to fetch projects by labor ID" });
+    }
+  };
+
   return this;
 }
 

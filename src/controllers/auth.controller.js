@@ -12,7 +12,9 @@ function AuthController() {
           .send({ error: "Login failed! Check authentication credentials" });
       }
 
-      res.send({ user: { _id: user._id, ...user.toAuthJSON() } });
+      res.send({
+        user: { _id: user._id, labor_id: user.labor_id, ...user.toAuthJSON() },
+      });
     } catch (error) {
       res.status(400).send({ error: "Login failed" });
     }

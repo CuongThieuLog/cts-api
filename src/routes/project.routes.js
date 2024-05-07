@@ -10,5 +10,6 @@ router.delete("/remove/:id", auth, ProjectController.remove);
 router.get("/key-value", auth, ProjectController.getKeyValue);
 router.get("/export-excel", auth, ProjectController.exportAllProjectsToExcel);
 router.put("/add-labors/:id", auth, ProjectController.addLaborsToProject);
+router.get("/by-labor/:laborId", auth, ProjectController.getProjectsByLaborId);
 
 module.exports = router;
