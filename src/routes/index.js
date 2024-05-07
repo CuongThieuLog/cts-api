@@ -10,6 +10,7 @@ const costRoute = require("./cost.routes");
 const reportRoute = require("./report.routes");
 const equipmentRoute = require("./equipment.routes");
 const attendanceRoute = require("./attendance.routes");
+const approvalRequestRoute = require("./approvalRequest.routes");
 
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router.use("/cost", costRoute);
 router.use("/report", reportRoute);
 router.use("/equipment", equipmentRoute);
 router.use("/attendance", attendanceRoute);
+router.use("/approval-request", approvalRequestRoute);
 
 module.exports = router;

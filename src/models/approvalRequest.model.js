@@ -17,7 +17,7 @@ const ApprovalRequestSchema = new mongoose.Schema(
     },
     status: {
       type: Number,
-      enum: [0, 1], // 0: Pending, 1: Approved
+      enum: [0, 1],
       default: 0,
     },
     viewed: {
