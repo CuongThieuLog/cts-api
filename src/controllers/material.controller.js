@@ -160,6 +160,27 @@ function MaterialController() {
     }
   };
 
+  this.updateStatus = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    try {
+      const material = await Material.findById(id);
+
+      if (!material) {
+        return res.status(404).json({ error: "Material not found" });
+      }
+
+      material.status = status;
+      await material.save();
+
+      res.status(200).json({ message: "Material status updated successfully" });
+    } catch (error) {
+      console.error("Error updating material status:", error);
+      res.status(500).json({ error: "Failed to update material status" });
+    }
+  };
+
   return this;
 }
 

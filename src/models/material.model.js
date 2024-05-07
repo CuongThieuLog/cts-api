@@ -19,6 +19,12 @@ const MaterialSchema = new mongoose.Schema(
       ref: "Project",
       required: true,
     },
+    status: {
+      type: Number,
+      // enum: ["Pending", "Approved", "Rejected"],
+      enum: [0, 1, 2],
+      default: 0,
+    },
   },
   { timestamps: true }
 );

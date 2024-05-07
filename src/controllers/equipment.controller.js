@@ -200,6 +200,29 @@ function EquipmentController() {
     }
   };
 
+  this.updateStatus = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    try {
+      const equipment = await Equipment.findById(id);
+
+      if (!equipment) {
+        return res.status(404).json({ error: "Equipment not found" });
+      }
+
+      equipment.status = status;
+      await equipment.save();
+
+      res
+        .status(200)
+        .json({ message: "Equipment status updated successfully" });
+    } catch (error) {
+      console.error("Error updating equipment status:", error);
+      res.status(500).json({ error: "Failed to update equipment status" });
+    }
+  };
+
   return this;
 }
 
