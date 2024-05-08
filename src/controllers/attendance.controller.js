@@ -112,31 +112,26 @@ function AttendanceController() {
     return totalSalary;
   };
 
-  this.getAllCheckInOutByMonthAndYearForCurrentUser = async (req, res) => {
+  this.getAllSheetByMonthYear = async (req, res) => {
     try {
       const userId = req.user._id;
       const { month, year } = req.params;
-
       const startDate = new Date(year, month - 1, 1);
       const endDate = new Date(year, month, 0, 23, 59, 59);
-
       const allCheckInOut = await Attendance.find({
         user_id: userId,
         checkIn: { $gte: startDate, $lte: endDate },
       });
-
       if (allCheckInOut.length === 0) {
         return res.status(404).json({
           error:
             "No check-in/out data available for the current user and month",
         });
       }
-
       const checkInOutData = allCheckInOut.map((attendance) => ({
         checkIn: attendance.checkIn,
         checkOut: attendance.checkOut,
       }));
-
       res.status(200).json(checkInOutData);
     } catch (error) {
       console.error("Error fetching check-in/out data:", error);
@@ -147,4 +142,4 @@ function AttendanceController() {
   return this;
 }
 
-module.exports = new AttendanceController();
+module.exports = AttendanceController();
