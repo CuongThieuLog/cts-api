@@ -43,6 +43,16 @@ function AuthController() {
     }
   };
 
+  this.changePassword = async (req, res) => {
+    try {
+      const { oldPassword, newPassword } = req.body;
+      await req.user.changePassword(oldPassword, newPassword);
+      res.send({ message: "Password changed successfully" });
+    } catch (error) {
+      res.status(400).send({ error: error.message });
+    }
+  };
+
   return this;
 }
 
