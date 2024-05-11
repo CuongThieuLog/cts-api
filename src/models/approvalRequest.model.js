@@ -15,6 +15,10 @@ const ApprovalRequestSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
+    quantity: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: Number,
       enum: [0, 1],
