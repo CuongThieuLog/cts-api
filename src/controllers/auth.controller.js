@@ -53,6 +53,54 @@ function AuthController() {
     }
   };
 
+  this.requestPasswordReset = async (req, res) => {
+    try {
+      const { email } = req.body;
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        return res.status(404).send({ error: "User not found" });
+      }
+
+      await user.generatePasswordResetToken();
+
+      // await sendPasswordResetEmail(user.email, user.resetPasswordToken);
+
+      res.send({
+        email: user.email,
+        resetPasswordToken: user.resetPasswordToken,
+        message: "Password reset email sent",
+      });
+    } catch (error) {
+      res.status(500).send({ error: "Password reset request failed" });
+    }
+  };
+
+  this.resetPassword = async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordTokenExpiration: { $gt: Date.now() },
+      });
+
+      if (!user) {
+        return res.status(400).send({ error: "Invalid or expired token" });
+      }
+
+      user.password = newPassword;
+
+      user.resetPasswordToken = undefined;
+      user.resetPasswordTokenExpiration = undefined;
+
+      await user.save();
+
+      res.send({ message: "Password reset successful" });
+    } catch (error) {
+      res.status(500).send({ error: "Password reset failed" });
+    }
+  };
+
   return this;
 }
 

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -93,6 +94,17 @@ UserSchema.methods.changePassword = async function (oldPassword, newPassword) {
   }
   user.password = newPassword;
   await user.save();
+};
+
+UserSchema.methods.generatePasswordResetToken = function () {
+  const resetToken = Math.floor(10000 + Math.random() * 90000).toString();
+
+  const resetTokenExpiration = Date.now() + 300000;
+
+  this.resetPasswordToken = resetToken;
+  this.resetPasswordTokenExpiration = resetTokenExpiration;
+
+  return this.save();
 };
 
 const User = mongoose.model("User", UserSchema);
