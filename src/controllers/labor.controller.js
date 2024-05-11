@@ -1,3 +1,4 @@
+const Attendance = require("../models/attendance.model");
 const Information = require("../models/information.model");
 const Labor = require("../models/labor.model");
 const User = require("../models/user.model");
@@ -109,6 +110,59 @@ function LaborController() {
       res.status(200).json({ message: "Updated labor and user successfully" });
     } catch (error) {
       res.status(500).json({ error: "Update failed" });
+    }
+  };
+
+  this.getAttendanceByMonthAndYear = async (req, res) => {
+    try {
+      const userId = req.user._id;
+      const { month, year } = req.params;
+      const startDate = new Date(year, month - 1, 1);
+      const endDate = new Date(year, month, 0, 23, 59, 59);
+      const allCheckInOut = await Attendance.find({
+        user_id: userId,
+        checkIn: { $gte: startDate, $lte: endDate },
+      });
+      if (allCheckInOut.length === 0) {
+        return res.status(200).json({
+          data: [],
+        });
+      }
+      const checkInOutData = allCheckInOut.map((attendance) => ({
+        checkIn: attendance.checkIn,
+        checkOut: attendance.checkOut,
+      }));
+
+      res.status(200).json({ data: checkInOutData });
+    } catch (error) {
+      console.error("Error fetching check-in/out data:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  };
+
+  this.getAttendanceByMonthAndYearByUser = async (req, res) => {
+    try {
+      const { userId, month, year } = req.params;
+      const startDate = new Date(year, month - 1, 1);
+      const endDate = new Date(year, month, 0, 23, 59, 59);
+      const allCheckInOut = await Attendance.find({
+        user_id: userId,
+        checkIn: { $gte: startDate, $lte: endDate },
+      });
+      if (allCheckInOut.length === 0) {
+        return res.status(200).json({
+          data: [],
+        });
+      }
+      const checkInOutData = allCheckInOut.map((attendance) => ({
+        checkIn: attendance.checkIn,
+        checkOut: attendance.checkOut,
+      }));
+
+      res.status(200).json({ data: checkInOutData });
+    } catch (error) {
+      console.error("Error fetching check-in/out data:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   };
 
