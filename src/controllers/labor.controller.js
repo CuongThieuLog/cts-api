@@ -166,6 +166,44 @@ function LaborController() {
     }
   };
 
+  this.calculateMonthlySalary = async (req, res) => {
+    const { userId, month, year } = req.params;
+    const attendances = await Attendance.find({
+      user_id: userId,
+      checkIn: {
+        $gte: new Date(year, month - 1, 1),
+        $lt: new Date(year, month, 1),
+      },
+    });
+
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      throw new Error("User  not found for the user");
+    }
+
+    const labor = await Labor.findOne({ _id: user.labor_id });
+
+    if (!labor) {
+      throw new Error("Labor not found for the user");
+    }
+
+    let totalHours = 0;
+    attendances.forEach((attendance) => {
+      if (attendance.checkIn && attendance.checkOut) {
+        const hoursWorked =
+          (attendance.checkOut - attendance.checkIn) / (1000 * 60 * 60);
+        totalHours += hoursWorked;
+      }
+    });
+
+    const totalSalary = totalHours * labor.rate_per_hour;
+
+    return res
+      .status(200)
+      .json({ date: `${month}-${year}`, total: totalSalary });
+  };
+
   return this;
 }
 

@@ -82,36 +82,6 @@ function AttendanceController() {
     }
   };
 
-  this.calculateMonthlySalary = async (req, res) => {
-    const { userId, month, year } = req.params;
-    const attendances = await Attendance.find({
-      user_id: userId,
-      checkIn: {
-        $gte: new Date(year, month - 1, 1),
-        $lt: new Date(year, month, 1),
-      },
-    });
-
-    const laborInfo = await Labor.findOne({ information_id: userId });
-
-    if (!laborInfo) {
-      throw new Error("Labor information not found for the user");
-    }
-
-    let totalHours = 0;
-    attendances.forEach((attendance) => {
-      if (attendance.checkIn && attendance.checkOut) {
-        const hoursWorked =
-          (attendance.checkOut - attendance.checkIn) / (1000 * 60 * 60);
-        totalHours += hoursWorked;
-      }
-    });
-
-    const totalSalary = totalHours * laborInfo.rate_per_hour;
-
-    return totalSalary;
-  };
-
   return this;
 }
 

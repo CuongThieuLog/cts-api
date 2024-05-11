@@ -14,5 +14,10 @@ router.get(
   auth,
   LaborController.getAttendanceByMonthAndYearByUser
 );
+router.get(
+  "/attendance/total-salary-month/:userId/:month/:year",
+  auth,
+  LaborController.calculateMonthlySalary
+);
 
 module.exports = router;
