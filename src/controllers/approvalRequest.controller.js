@@ -199,16 +199,24 @@ function ApprovalRequestController() {
 
   this.getByProjectId = async (req, res) => {
     const { projectId } = req.params;
+    const { type } = req.query;
+
+    const query = {
+      project_id: projectId,
+    };
+
+    if (type === "material" || type === "equipment") {
+      query.type = type; // Set the type in the query if it's either "material" or "equipment"
+    }
+
     try {
-      const approvalRequests = await ApprovalRequest.find({
-        project_id: projectId,
-      });
+      const approvalRequests = await ApprovalRequest.find(query);
 
-      if (approvalRequests.length == 0) {
+      if (approvalRequests.length === 0) {
         res.status(202).json({ data: [] });
+      } else {
+        res.status(200).json({ data: approvalRequests });
       }
-
-      res.status(200).json({ data: approvalRequests });
     } catch (error) {
       console.error("Error fetching approval requests by project ID:", error);
       res.status(500).json({ message: "Internal server error" });

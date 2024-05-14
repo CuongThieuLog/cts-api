@@ -13,6 +13,7 @@ const ApprovalRequestSchema = new mongoose.Schema(
       required: true,
     },
     type: {
+      //type: material and equipment
       type: String,
       required: true,
     },
