@@ -2,17 +2,31 @@ const ApprovalRequest = require("../models/approvalRequest.model");
 const Equipment = require("../models/equipment.model");
 const Material = require("../models/material.model");
 const mongoose = require("mongoose");
+const BaseController = require("./base.controller");
 
 function ApprovalRequestController() {
+  const baseController = BaseController;
+
   this.all = async (req, res) => {
     try {
-      const approvalRequests = await ApprovalRequest.find()
-        .populate({
+      const { page, limit, status } = req.query;
+      let query = baseController.appendFilters({}, { status });
+      let eloquent = (queryBuilder) => {
+        return queryBuilder.populate({
           path: "user_id",
           select: "email role labor_id",
-        })
-        .exec();
-      res.status(200).json(approvalRequests);
+        });
+      };
+
+      const { results, pagination } = await baseController.pagination(
+        ApprovalRequest,
+        query,
+        eloquent,
+        page,
+        limit
+      );
+
+      res.json({ data: results, pagination: pagination });
     } catch (error) {
       console.error("Error fetching approval requests:", error);
       res.status(500).json({ message: "Internal server error" });
