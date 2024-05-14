@@ -26,7 +26,7 @@ const ApprovalRequestSchema = new mongoose.Schema(
     },
     status: {
       type: Number,
-      enum: [0, 1],
+      enum: [0, 1, 2],
       default: 0,
     },
     viewed: {
