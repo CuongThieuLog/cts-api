@@ -197,6 +197,24 @@ function ApprovalRequestController() {
     }
   };
 
+  this.getByProjectId = async (req, res) => {
+    const { projectId } = req.params;
+    try {
+      const approvalRequests = await ApprovalRequest.find({
+        project_id: projectId,
+      });
+
+      if (approvalRequests.length == 0) {
+        res.status(202).json({ data: [] });
+      }
+
+      res.status(200).json({ data: approvalRequests });
+    } catch (error) {
+      console.error("Error fetching approval requests by project ID:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
   return this;
 }
 
