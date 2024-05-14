@@ -144,7 +144,7 @@ function ApprovalRequestController() {
         return res.status(404).json({ message: "Approval request not found" });
       }
 
-      if (status === 1) {
+      if (status === 2) {
         const { type, itemId, quantity } = updatedRequest;
 
         switch (type) {
