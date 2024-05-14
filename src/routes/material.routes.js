@@ -12,5 +12,10 @@ router.get(
   "/project/get-by/:projectId",
   MaterialController.getMaterialByIdProject
 );
+router.get(
+  "/get-by-project/:projectId",
+  auth,
+  MaterialController.getMaterialByProjectId
+);
 
 module.exports = router;

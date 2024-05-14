@@ -181,6 +181,26 @@ function MaterialController() {
     }
   };
 
+  this.getMaterialByProjectId = async (req, res) => {
+    const { projectId } = req.params;
+    try {
+      const materials = await Material.find({ project_id: projectId });
+
+      if (materials.length === 0) {
+        return res
+          .status(404)
+          .json({ error: "No materials found for this project" });
+      }
+
+      res.status(200).json({ data: materials });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Failed to fetch materials by project id" });
+    }
+  };
+
   return this;
 }
 
