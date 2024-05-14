@@ -24,7 +24,7 @@ function ApprovalRequestController() {
     session.startTransaction();
 
     try {
-      const { type, itemId, note, quantity } = req.body;
+      const { type, itemId, note, quantity, project_id } = req.body;
 
       switch (type) {
         case "material": {
@@ -66,6 +66,7 @@ function ApprovalRequestController() {
         itemId,
         note,
         quantity,
+        project_id,
       });
       await approvalRequest.save();
 

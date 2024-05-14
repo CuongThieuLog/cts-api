@@ -7,6 +7,11 @@ const ApprovalRequestSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    project_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+      required: true,
+    },
     type: {
       type: String,
       required: true,
