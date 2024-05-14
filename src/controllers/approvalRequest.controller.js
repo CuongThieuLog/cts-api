@@ -12,10 +12,12 @@ function ApprovalRequestController() {
       const { page, limit, status } = req.query;
       let query = baseController.appendFilters({}, { status });
       let eloquent = (queryBuilder) => {
-        return queryBuilder.populate({
-          path: "user_id",
-          select: "email role labor_id",
-        });
+        return queryBuilder
+          .populate({
+            path: "user_id",
+            select: "email role labor_id",
+          })
+          .populate({ path: "project_id" });
       };
 
       const { results, pagination } = await baseController.pagination(
