@@ -187,9 +187,7 @@ function MaterialController() {
       const materials = await Material.find({ project_id: projectId });
 
       if (materials.length === 0) {
-        return res
-          .status(404)
-          .json({ error: "No materials found for this project" });
+        return res.status(202).json({ data: [] });
       }
 
       res.status(200).json({ data: materials });

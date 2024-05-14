@@ -17,5 +17,10 @@ router.get(
   "/project/get-by/:projectId",
   EquipmentController.getEquipmentByIdProject
 );
+router.get(
+  "/get-by-equipment/:projectId",
+  auth,
+  EquipmentController.getEquipmentByProjectId
+);
 
 module.exports = router;

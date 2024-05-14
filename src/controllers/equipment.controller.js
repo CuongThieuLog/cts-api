@@ -223,6 +223,24 @@ function EquipmentController() {
     }
   };
 
+  this.getEquipmentByProjectId = async (req, res) => {
+    const { projectId } = req.params;
+    try {
+      const equipments = await Equipment.find({ project_id: projectId });
+
+      if (equipments.length === 0) {
+        return res.status(202).json({ data: [] });
+      }
+
+      res.status(200).json({ data: equipments });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Failed to fetch equipments by project id" });
+    }
+  };
+
   return this;
 }
 
